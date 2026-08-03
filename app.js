@@ -11,6 +11,7 @@ if ('serviceWorker' in navigator) {
 let sessao = null;
 let profissionais = [];
 let pacientes = [];
+let tiposConsulta = [];
 let confirmarComConflito = false;
 let ultimoRelatorio = null;
 let mesCalendario = new Date();
@@ -73,9 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-mes-anterior').addEventListener('click', () => { mesCalendario.setMonth(mesCalendario.getMonth() - 1); renderizarMiniCalendario(); });
   document.getElementById('btn-mes-proximo').addEventListener('click', () => { mesCalendario.setMonth(mesCalendario.getMonth() + 1); renderizarMiniCalendario(); });
 
+  // Menu mobile (gaveta lateral)
+  document.getElementById('btn-menu-mobile').addEventListener('click', () => alternarMenuMobile(true));
+  document.getElementById('fundo-sidebar-mobile').addEventListener('click', () => alternarMenuMobile(false));
+  document.querySelectorAll('.menu-lateral a').forEach(a => a.addEventListener('click', () => alternarMenuMobile(false)));
+
   ['consulta-profissional', 'consulta-data', 'consulta-hora-inicio', 'consulta-hora-fim'].forEach(id => {
     document.getElementById(id).addEventListener('change', () => { confirmarComConflito = false; esconderAvisoConflito(); });
   });
+  document.getElementById('consulta-tipo').addEventListener('change', aplicarDuracaoTipoConsulta);
+  document.getElementById('consulta-hora-inicio').addEventListener('change', aplicarDuracaoTipoConsulta);
+  document.getElementById('form-novo-tipo').addEventListener('submit', cadastrarTipoConsulta);
 
   // Pacientes
   document.getElementById('btn-novo-paciente').addEventListener('click', () => abrirModalPaciente());
@@ -108,6 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function debounce(fn, ms) {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+function alternarMenuMobile(abrir) {
+  document.getElementById('sidebar').classList.toggle('sidebar-aberta', abrir);
+  document.getElementById('fundo-sidebar-mobile').classList.toggle('visivel', abrir);
 }
 function primeiroDiaDoMes() {
   const d = new Date(); d.setDate(1);
@@ -147,6 +160,7 @@ async function iniciarApp() {
 
   await carregarProfissionais();
   await carregarPacientes();
+  await carregarTiposConsulta();
   configurarFiltroPorPerfil();
   atualizarTituloDia();
   renderizarMiniCalendario();
@@ -236,6 +250,14 @@ async function carregarProfissionais() {
 async function carregarPacientes() {
   const r = await api('listPacientes');
   pacientes = r.success ? r.pacientes : [];
+}
+
+async function carregarTiposConsulta() {
+  const r = await api('listTiposConsulta');
+  tiposConsulta = r.success ? r.tipos : [];
+  const select = document.getElementById('consulta-tipo');
+  select.innerHTML = '<option value="">Duração personalizada</option>';
+  tiposConsulta.forEach(t => select.appendChild(new Option(`${t.nome} (${t.duracaoMinutos} min)`, t.id)));
 }
 
 function configurarFiltroPorPerfil() {
@@ -445,6 +467,19 @@ function abrirModal(consulta, horaSugerida) {
 
   document.getElementById('overlay-modal').classList.remove('oculto');
 }
+function aplicarDuracaoTipoConsulta() {
+  const tipoId = document.getElementById('consulta-tipo').value;
+  const horaInicio = document.getElementById('consulta-hora-inicio').value;
+  if (!tipoId || !horaInicio) return;
+  const tipo = tiposConsulta.find(t => String(t.id) === tipoId);
+  if (!tipo) return;
+  const [h, m] = horaInicio.split(':').map(Number);
+  const totalMin = h * 60 + m + Number(tipo.duracaoMinutos);
+  const hFim = Math.floor(totalMin / 60) % 24;
+  const mFim = totalMin % 60;
+  document.getElementById('consulta-hora-fim').value = String(hFim).padStart(2, '0') + ':' + String(mFim).padStart(2, '0');
+}
+
 function fecharModal() { document.getElementById('overlay-modal').classList.add('oculto'); }
 
 async function carregarHistoricoConsulta(consultaId) {
@@ -713,7 +748,48 @@ function exportarPdf() {
 }
 
 // ---------- Administração de profissionais ----------
-async function abrirAdmin() { document.getElementById('overlay-admin').classList.remove('oculto'); await carregarListaAdmin(); }
+async function abrirAdmin() {
+  document.getElementById('overlay-admin').classList.remove('oculto');
+  await carregarListaAdmin();
+  await carregarListaTiposAdmin();
+}
+
+async function carregarListaTiposAdmin() {
+  const r = await api('listTiposConsulta');
+  const container = document.getElementById('lista-tipos-consulta');
+  const tipos = r.success ? r.tipos : [];
+  if (tipos.length === 0) { container.innerHTML = '<p class="vazio" style="padding:16px">Nenhum tipo cadastrado ainda.</p>'; return; }
+
+  container.innerHTML = '';
+  tipos.forEach(t => {
+    const linha = document.createElement('div');
+    linha.className = 'card-consulta';
+    linha.innerHTML = `
+      <div class="detalhes"><div class="paciente">${escapeHtml(t.nome)}</div><div class="obs">${t.duracaoMinutos} minutos</div></div>
+      <div class="acoes"><button type="button" class="btn-texto btn-remover-tipo" style="color:#A64B3B">Desativar</button></div>
+    `;
+    linha.querySelector('.btn-remover-tipo').addEventListener('click', async () => {
+      await api('alternarAtivoTipoConsulta', { solicitanteId: sessao.id, id: t.id, ativo: false });
+      await carregarListaTiposAdmin();
+      await carregarTiposConsulta();
+    });
+    container.appendChild(linha);
+  });
+}
+
+async function cadastrarTipoConsulta(e) {
+  e.preventDefault();
+  const nome = document.getElementById('novo-tipo-nome').value.trim();
+  const duracaoMinutos = document.getElementById('novo-tipo-duracao').value;
+  const r = await api('criarTipoConsulta', { solicitanteId: sessao.id, nome, duracaoMinutos });
+  if (r.success) {
+    document.getElementById('form-novo-tipo').reset();
+    await carregarListaTiposAdmin();
+    await carregarTiposConsulta();
+  } else {
+    alert('Não foi possível cadastrar: ' + r.error);
+  }
+}
 
 async function carregarListaAdmin() {
   const container = document.getElementById('lista-admin-profissionais');
