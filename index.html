@@ -3,145 +3,1165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda do Consultório</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<title>Agenda +</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2F6F5E">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#4A9E7A">
+
+<!-- Fontes -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- SheetJS -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<style>
+/* ============================================================
+   NOVA INTERFACE - DESIGN MINIMALISTA E AGRADÁVEL
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #F6F9F7;
+  --surface: #FFFFFF;
+  --surface-soft: #EDF4F0;
+  --surface-hover: #F3F8F5;
+  --primary: #4A9E7A;
+  --primary-light: #E6F4EE;
+  --primary-dark: #2D7A5C;
+  --primary-glow: rgba(74, 158, 122, 0.15);
+  --accent: #E8A84C;
+  --accent-light: #FDF3E2;
+  --text: #1A2E24;
+  --text-secondary: #4D6B5B;
+  --text-muted: #8AA094;
+  --border: #E2E8E4;
+  --border-light: #EEF2EF;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 4px 24px rgba(74, 158, 122, 0.07);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-full: 999px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --font: 'Inter', -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', var(--font);
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ===== LOGIN ===== */
+.tela-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(145deg, #F6F9F7 0%, #E8F0EC 100%);
+}
+
+.cartao-login {
+  background: var(--surface);
+  padding: 48px 40px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+
+.cartao-login .logo {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 32px;
+}
+
+.cartao-login h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.cartao-login .subtitulo {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+.campo {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--text);
+  transition: var(--transition);
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.campo textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(74, 158, 122, 0.25);
+}
+
+.btn-secondary {
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+  border: 2px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+.btn-danger {
+  background: #FEE8E6;
+  color: #C0392B;
+}
+
+.btn-danger:hover {
+  background: #FDD5D2;
+}
+
+.btn-success {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.btn-success:hover {
+  background: #D4EDE2;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border-light);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+}
+
+.sidebar-header .icon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.sidebar-header h1 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.sidebar-header span {
+  color: var(--primary);
+}
+
+/* Mini Calendário */
+.mini-calendario {
+  background: var(--surface-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.mini-calendario-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mini-calendario-topo .mes {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.mini-calendario-topo .nav {
+  display: flex;
+  gap: 2px;
+}
+
+.mini-calendario-topo .nav button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.mini-calendario-topo .nav button:hover {
+  background: var(--surface);
+}
+
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dia {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text);
+  font-weight: 500;
+  position: relative;
+}
+
+.dia:hover {
+  background: var(--surface);
+}
+
+.dia.outro-mes {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.dia.hoje {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.dia.selecionado {
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+}
+
+.dia.tem-consulta::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Menu */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.menu a:hover {
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+.menu a.ativo {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.menu a .icone {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.usuario-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 16px;
+}
+
+.usuario-detalhes {
+  flex: 1;
+}
+
+.usuario-detalhes .nome {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.usuario-detalhes .perfil {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.btn-sair {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  text-align: center;
+}
+
+.btn-sair:hover {
+  background: #FEE8E6;
+  color: #C0392B;
+}
+
+/* ===== CONTEÚDO PRINCIPAL ===== */
+.conteudo {
+  flex: 1;
+  padding: 28px 36px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.top-bar h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.top-bar .data-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+}
+
+.top-bar .data-nav button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.top-bar .data-nav button:hover {
+  background: var(--surface-soft);
+}
+
+.top-bar .data-nav .data-label {
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 140px;
+  text-align: center;
+  color: var(--text);
+}
+
+.top-bar .busca {
+  flex: 1;
+  max-width: 300px;
+  margin-left: auto;
+  position: relative;
+}
+
+.top-bar .busca input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--surface);
+  transition: var(--transition);
+}
+
+.top-bar .busca input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.top-bar .busca .icone-busca {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+/* ===== GRADE DE HORÁRIOS ===== */
+.grade-container {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.grade {
+  display: flex;
+  flex-direction: column;
+}
+
+.linha-horario {
+  display: flex;
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition);
+}
+
+.linha-horario:last-child {
+  border-bottom: none;
+}
+
+.linha-horario:hover {
+  background: var(--surface-hover);
+}
+
+.rotulo-horario {
+  width: 72px;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border-light);
+  font-family: var(--font-display);
+  letter-spacing: 0.3px;
+}
+
+.conteudo-horario {
+  flex: 1;
+  padding: 6px 12px;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.slot-vazio {
+  width: 100%;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  padding: 8px 14px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-vazio:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.consulta-card {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary);
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.consulta-card:hover {
+  transform: translateX(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.consulta-card.status-cancelado {
+  border-left-color: #C0392B;
+  background: #FEF5F3;
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+.consulta-card.status-realizado {
+  border-left-color: var(--primary-dark);
+  background: #E8F5EE;
+}
+
+.consulta-card.status-confirmado {
+  border-left-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.consulta-card.status-falta {
+  border-left-color: #8E44AD;
+  background: #F4EEF9;
+}
+
+.consulta-card .horario {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-secondary);
+  min-width: 70px;
+}
+
+.consulta-card .paciente {
+  font-weight: 600;
+  flex: 1;
+  font-size: 14px;
+}
+
+.consulta-card .obs {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.consulta-card .tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: white;
+}
+
+.consulta-card .tag.cancelado { background: #C0392B; }
+.consulta-card .tag.realizado { background: var(--primary-dark); }
+.consulta-card .tag.confirmado { background: var(--accent); color: #7A5A16; }
+.consulta-card .tag.falta { background: #8E44AD; }
+
+.consulta-card .acoes {
+  display: flex;
+  gap: 2px;
+}
+
+.consulta-card .acoes button {
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.consulta-card .acoes button:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.consulta-card .acoes .btn-cancelar:hover {
+  color: #C0392B;
+  background: #FEE8E6;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 46, 36, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.modal .linha-dupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ===== PACIENTES ===== */
+.paciente-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: var(--transition);
+  margin-bottom: 8px;
+}
+
+.paciente-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.paciente-card .info {
+  flex: 1;
+}
+
+.paciente-card .nome {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.paciente-card .detalhes {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== RELATÓRIOS ===== */
+.relatorio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.metrica-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  text-align: center;
+}
+
+.metrica-card .numero {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.metrica-card .rotulo {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 72px;
+    padding: 16px 8px;
+  }
+  .sidebar-header h1,
+  .sidebar-header span,
+  .menu a span,
+  .usuario-detalhes,
+  .btn-sair {
+    display: none;
+  }
+  .menu a {
+    justify-content: center;
+    padding: 12px;
+  }
+  .menu a .icone {
+    font-size: 22px;
+    width: auto;
+  }
+  .mini-calendario {
+    display: none;
+  }
+  .sidebar-footer {
+    border-top: none;
+    padding-top: 0;
+  }
+  .usuario-info {
+    justify-content: center;
+  }
+  .conteudo {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    width: 56px;
+    padding: 12px 4px;
+  }
+  .menu a {
+    padding: 10px;
+  }
+  .conteudo {
+    padding: 16px;
+  }
+  .top-bar {
+    flex-wrap: wrap;
+  }
+  .top-bar .busca {
+    max-width: 100%;
+    order: 10;
+    flex: 1 1 100%;
+  }
+  .top-bar h2 {
+    font-size: 18px;
+  }
+  .rotulo-horario {
+    width: 56px;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+  .consulta-card {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+  .consulta-card .obs {
+    display: none;
+  }
+  .modal {
+    padding: 20px;
+  }
+  .modal .linha-dupla {
+    grid-template-columns: 1fr;
+  }
+  .relatorio-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ===== UTILITÁRIOS ===== */
+.oculto { display: none !important; }
+.oculto-visual { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.flex { display: flex; align-items: center; gap: 8px; }
+.gap-2 { gap: 8px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); }
+.text-sm { font-size: 13px; }
+.w-full { width: 100%; }
+
+/* ===== SUGESTÕES ===== */
+.sugestoes {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sugestoes .item {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+}
+
+.sugestoes .item:hover {
+  background: var(--primary-light);
+}
+
+/* ===== ALERTA ===== */
+.alerta {
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  color: #7A5A16;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.alerta-conflito {
+  background: #FEF5F3;
+  border-color: #E6B8B0;
+  color: #A64B3B;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: none;
+}
+
+/* ===== IMPRESSÃO ===== */
+@media print {
+  .sidebar, .top-bar, .btn, .modal-overlay { display: none !important; }
+  .conteudo { padding: 0; }
+  .grade-container { border: none; box-shadow: none; }
+  .linha-horario:hover { background: transparent; }
+}
+</style>
 </head>
 <body>
 
-<!-- ===== TELA DE LOGIN ===== -->
+<!-- ===== LOGIN ===== -->
 <div id="tela-login" class="tela-login">
   <div class="cartao-login">
-    <img src="logo.png" alt="Logo" class="logo-login">
-    <h2>Agenda do Consultório</h2>
-    <p class="subtitulo">Entre com seu usuário e senha.</p>
-    <div id="erro-login" class="erro-login"></div>
+    <div class="logo">📋</div>
+    <h1>Agenda<span>+</span></h1>
+    <p class="subtitulo">Entre para gerenciar sua agenda</p>
+    <div id="erro-login" class="alerta alerta-conflito" style="display:none"></div>
     <form id="form-login">
       <div class="campo">
         <label for="login-usuario">Usuário</label>
-        <input type="text" id="login-usuario" required autocomplete="username">
+        <input type="text" id="login-usuario" placeholder="Digite seu usuário" required>
       </div>
       <div class="campo">
         <label for="login-senha">Senha</label>
-        <input type="password" id="login-senha" required autocomplete="current-password">
+        <input type="password" id="login-senha" placeholder="Digite sua senha" required>
       </div>
-      <button type="submit" class="btn-primario" style="width:100%">Entrar</button>
+      <button type="submit" class="btn btn-primary w-full">Entrar</button>
     </form>
   </div>
 </div>
 
-<!-- ===== APP PRINCIPAL (LAYOUT COM SIDEBAR) ===== -->
-<div id="app" class="oculto app-shell">
+<!-- ===== APP ===== -->
+<div id="app" class="app-container oculto">
 
   <!-- ===== SIDEBAR ===== -->
-  <aside class="sidebar">
-    <div class="marca-sidebar">
-      <img src="logo.png" alt="Logo" class="logo-sidebar">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="icon">📋</div>
+      <h1>Agenda<span>+</span></h1>
     </div>
 
-    <!-- Mini calendário -->
-    <div class="mini-calendario">
+    <!-- Mini Calendário -->
+    <div class="mini-calendario" id="mini-calendario">
       <div class="mini-calendario-topo">
-        <button type="button" id="btn-hoje" class="btn-hoje">Hoje</button>
-        <div class="mini-calendario-nav">
-          <button type="button" id="btn-mes-anterior" class="btn-nav-icone" aria-label="Mês anterior">‹</button>
-          <span id="mini-calendario-titulo"></span>
-          <button type="button" id="btn-mes-proximo" class="btn-nav-icone" aria-label="Próximo mês">›</button>
+        <span class="mes" id="mini-mes"></span>
+        <div class="nav">
+          <button id="btn-mes-anterior">‹</button>
+          <button id="btn-mes-proximo">›</button>
         </div>
       </div>
-      <div class="mini-calendario-dias-semana">
+      <div class="dias-semana">
         <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
       </div>
-      <div id="mini-calendario-grade" class="mini-calendario-grade"></div>
+      <div class="dias-grid" id="dias-grid"></div>
     </div>
 
-    <div class="campo sidebar-campo">
-      <label>Profissional</label>
-      <select id="filtro-profissional"></select>
-    </div>
-
-    <nav class="menu-lateral">
-      <a href="#" id="btn-aba-agenda" class="aba-ativa">📅 Agenda</a>
-      <a href="#" id="btn-aba-pacientes">🧑‍🤝‍🧑 Pacientes</a>
-      <a href="#" id="btn-aba-relatorios">📊 Relatórios</a>
-      <a href="#" id="btn-admin" class="oculto">⚙️ Profissionais</a>
+    <!-- Menu -->
+    <nav class="menu">
+      <a href="#" id="btn-aba-agenda" class="ativo">
+        <span class="icone">📅</span>
+        <span>Agenda</span>
+      </a>
+      <a href="#" id="btn-aba-pacientes">
+        <span class="icone">👤</span>
+        <span>Pacientes</span>
+      </a>
+      <a href="#" id="btn-aba-relatorios">
+        <span class="icone">📊</span>
+        <span>Relatórios</span>
+      </a>
+      <a href="#" id="btn-admin" class="oculto">
+        <span class="icone">⚙️</span>
+        <span>Profissionais</span>
+      </a>
     </nav>
 
-    <div class="sidebar-rodape">
-      <a href="#" id="btn-notificacoes" class="oculto link-notificacoes">🔔 Notificações <span id="contador-notificacoes" class="contador oculto">0</span></a>
-      <div class="usuario-sidebar">
-        <strong id="nome-usuario-logado"></strong>
-        <span id="perfil-usuario-logado"></span>
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <div class="usuario-info">
+        <div class="usuario-avatar" id="avatar-usuario">M</div>
+        <div class="usuario-detalhes">
+          <div class="nome" id="nome-usuario">Maria</div>
+          <div class="perfil" id="perfil-usuario">Secretária</div>
+        </div>
       </div>
-      <a href="#" id="btn-sair" class="btn-sair-link">Sair</a>
+      <button class="btn-sair" id="btn-sair">Sair</button>
     </div>
   </aside>
 
-  <!-- ===== CONTEÚDO PRINCIPAL ===== -->
-  <main class="conteudo-principal">
+  <!-- ===== CONTEÚDO ===== -->
+  <main class="conteudo">
 
-    <!-- ===== ABA AGENDA (grade de horários, estilo PEC) ===== -->
+    <!-- ===== AGENDA ===== -->
     <section id="secao-agenda">
-      <div class="barra-topo-conteudo">
-        <div class="navegacao-dia">
-          <button type="button" id="btn-dia-anterior" class="btn-nav-icone" aria-label="Dia anterior">‹</button>
-          <h2 id="titulo-dia"></h2>
-          <button type="button" id="btn-dia-proximo" class="btn-nav-icone" aria-label="Próximo dia">›</button>
+      <div class="top-bar">
+        <div class="data-nav">
+          <button id="btn-dia-anterior">‹</button>
+          <span class="data-label" id="titulo-dia">Hoje, 10 de janeiro</span>
+          <button id="btn-dia-proximo">›</button>
         </div>
-        <input type="date" id="filtro-data" class="oculto-visual">
-        <div class="busca-topo">
+        <button class="btn btn-primary btn-sm" id="btn-hoje">Hoje</button>
+        <div class="busca">
+          <span class="icone-busca">🔍</span>
           <input type="text" id="busca-paciente" placeholder="Buscar paciente...">
         </div>
-        <button id="btn-nova-consulta" class="btn-primario">+ Nova consulta</button>
+        <button class="btn btn-primary" id="btn-nova-consulta">+ Nova consulta</button>
       </div>
 
-      <div id="alerta-proxima" class="alerta-proxima oculto"></div>
+      <div id="alerta-proxima" class="alerta oculto"></div>
+      <input type="date" id="filtro-data" class="oculto-visual">
 
-      <div class="grade-horarios-container">
-        <div id="grade-horarios" class="grade-horarios"></div>
+      <div class="grade-container">
+        <div class="grade" id="grade-horarios"></div>
       </div>
     </section>
 
-    <!-- ===== ABA PACIENTES ===== -->
+    <!-- ===== PACIENTES ===== -->
     <section id="secao-pacientes" class="oculto">
-      <div class="barra-topo-conteudo">
+      <div class="top-bar">
         <h2>Pacientes</h2>
-        <div class="busca-topo">
-          <input type="text" id="busca-paciente-cadastro" placeholder="Buscar paciente cadastrado...">
+        <div class="busca" style="max-width:300px;margin-left:auto">
+          <span class="icone-busca">🔍</span>
+          <input type="text" id="busca-paciente-cadastro" placeholder="Buscar paciente...">
         </div>
-        <button id="btn-novo-paciente" class="btn-primario">+ Novo paciente</button>
+        <button class="btn btn-primary" id="btn-novo-paciente">+ Novo paciente</button>
       </div>
-      <div id="lista-pacientes" class="lista-consultas"></div>
+      <div id="lista-pacientes"></div>
     </section>
 
-    <!-- ===== ABA RELATÓRIOS ===== -->
+    <!-- ===== RELATÓRIOS ===== -->
     <section id="secao-relatorios" class="oculto">
-      <div class="barra-topo-conteudo">
+      <div class="top-bar">
         <h2>Relatórios</h2>
       </div>
-      <div class="barra-controle">
-        <div class="campo" style="margin:0">
-          <label style="margin:0">Profissional</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+        <div class="campo" style="margin:0;flex:1;min-width:140px">
+          <label style="font-size:12px">Profissional</label>
           <select id="rel-profissional"></select>
         </div>
-        <div class="campo" style="margin:0">
-          <label style="margin:0">De</label>
+        <div class="campo" style="margin:0;flex:1;min-width:120px">
+          <label style="font-size:12px">De</label>
           <input type="date" id="rel-data-inicio">
         </div>
-        <div class="campo" style="margin:0">
-          <label style="margin:0">Até</label>
+        <div class="campo" style="margin:0;flex:1;min-width:120px">
+          <label style="font-size:12px">Até</label>
           <input type="date" id="rel-data-fim">
         </div>
-        <button id="btn-gerar-relatorio" class="btn-primario">Gerar</button>
-        <div class="espaco"></div>
-        <button id="btn-exportar-excel" class="btn-secundario">⬇ Excel</button>
-        <button id="btn-exportar-pdf" class="btn-secundario">⬇ PDF</button>
+        <button class="btn btn-primary" id="btn-gerar-relatorio">Gerar</button>
+        <button class="btn btn-secondary" id="btn-exportar-excel">📊 Excel</button>
+        <button class="btn btn-secondary" id="btn-exportar-pdf">📄 PDF</button>
       </div>
       <div id="conteudo-relatorio"></div>
     </section>
@@ -149,11 +1169,11 @@
   </main>
 </div>
 
-<!-- ===== MODAL DE CONSULTA ===== -->
-<div id="overlay-modal" class="overlay oculto">
+<!-- ===== MODAL CONSULTA ===== -->
+<div id="modal-consulta" class="modal-overlay oculto">
   <div class="modal">
-    <h3 id="titulo-modal">Nova consulta</h3>
-    <div id="aviso-conflito" class="aviso-conflito"></div>
+    <h3 id="modal-titulo">Nova consulta</h3>
+    <div id="aviso-conflito" class="alerta-conflito"></div>
     <form id="form-consulta">
       <input type="hidden" id="consulta-id">
       <input type="hidden" id="consulta-paciente-id">
@@ -163,7 +1183,7 @@
       </div>
       <div class="campo" style="position:relative">
         <label for="consulta-paciente">Paciente</label>
-        <input type="text" id="consulta-paciente" required autocomplete="off">
+        <input type="text" id="consulta-paciente" placeholder="Digite o nome" required autocomplete="off">
         <div id="sugestoes-paciente" class="sugestoes oculto"></div>
       </div>
       <div class="campo">
@@ -180,21 +1200,23 @@
           <input type="time" id="consulta-hora-fim" required>
         </div>
       </div>
-      <div class="campo">
-        <label for="consulta-status">Status</label>
-        <select id="consulta-status">
-          <option value="agendado">Agendado</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="realizado">Realizado</option>
-          <option value="falta">Falta</option>
-          <option value="cancelado">Cancelado</option>
-        </select>
-      </div>
       <div class="linha-dupla">
+        <div class="campo">
+          <label for="consulta-status">Status</label>
+          <select id="consulta-status">
+            <option value="agendado">Agendado</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="realizado">Realizado</option>
+            <option value="falta">Falta</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
         <div class="campo">
           <label for="consulta-valor">Valor (R$)</label>
           <input type="number" id="consulta-valor" min="0" step="0.01">
         </div>
+      </div>
+      <div class="linha-dupla">
         <div class="campo">
           <label for="consulta-pagamento">Pagamento</label>
           <select id="consulta-pagamento">
@@ -202,16 +1224,15 @@
             <option value="pago">Pago</option>
           </select>
         </div>
-      </div>
-      <div class="campo">
-        <label for="consulta-forma-pagamento">Forma de pagamento</label>
-        <select id="consulta-forma-pagamento">
-          <option value="">—</option>
-          <option value="dinheiro">Dinheiro</option>
-          <option value="pix">Pix</option>
-          <option value="cartao">Cartão</option>
-          <option value="outro">Outro</option>
-        </select>
+        <div class="campo">
+          <label for="consulta-forma-pagamento">Forma</label>
+          <select id="consulta-forma-pagamento">
+            <option value="">—</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">Pix</option>
+            <option value="cartao">Cartão</option>
+          </select>
+        </div>
       </div>
       <div class="campo">
         <label for="consulta-obs">Observações</label>
@@ -219,17 +1240,17 @@
       </div>
       <div id="area-historico-consulta"></div>
       <div class="modal-acoes">
-        <button type="button" id="btn-cancelar-modal" class="btn-secundario">Cancelar</button>
-        <button type="submit" class="btn-primario">Salvar</button>
+        <button type="button" class="btn btn-secondary" id="btn-cancelar-modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ===== MODAL DE PACIENTE ===== -->
-<div id="overlay-paciente" class="overlay oculto">
+<!-- ===== MODAL PACIENTE ===== -->
+<div id="modal-paciente" class="modal-overlay oculto">
   <div class="modal">
-    <h3 id="titulo-modal-paciente">Novo paciente</h3>
+    <h3 id="modal-paciente-titulo">Novo paciente</h3>
     <form id="form-paciente">
       <input type="hidden" id="paciente-id">
       <div class="campo">
@@ -247,32 +1268,33 @@
         </div>
       </div>
       <div class="campo">
-        <label for="paciente-obs">Anotações / prontuário</label>
+        <label for="paciente-obs">Anotações</label>
         <textarea id="paciente-obs" rows="3"></textarea>
       </div>
       <div id="area-historico-paciente"></div>
       <div class="modal-acoes">
-        <button type="button" id="btn-cancelar-paciente" class="btn-secundario">Fechar</button>
-        <button type="submit" class="btn-primario">Salvar</button>
+        <button type="button" class="btn btn-secondary" id="btn-cancelar-paciente">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ===== MODAL DE ADMINISTRAÇÃO DE PROFISSIONAIS ===== -->
-<div id="overlay-admin" class="overlay oculto">
+<!-- ===== MODAL ADMIN ===== -->
+<div id="modal-admin" class="modal-overlay oculto">
   <div class="modal" style="max-width:560px">
-    <h3>Profissionais cadastrados</h3>
-    <div id="lista-admin-profissionais" style="margin-bottom:20px"></div>
-    <h3 style="font-size:1rem">Cadastrar novo</h3>
+    <h3>Profissionais</h3>
+    <div id="lista-admin-profissionais" class="mb-4"></div>
+    <hr style="border:none;border-top:1px solid var(--border-light);margin:16px 0">
+    <h4 style="font-size:15px;font-weight:600;margin-bottom:12px">Cadastrar novo</h4>
     <form id="form-novo-profissional">
       <div class="linha-dupla">
         <div class="campo">
-          <label for="novo-nome">Nome completo</label>
+          <label for="novo-nome">Nome</label>
           <input type="text" id="novo-nome" required>
         </div>
         <div class="campo">
-          <label for="novo-usuario">Usuário (login)</label>
+          <label for="novo-usuario">Usuário</label>
           <input type="text" id="novo-usuario" required>
         </div>
       </div>
@@ -281,7 +1303,7 @@
           <label for="novo-perfil">Perfil</label>
           <select id="novo-perfil">
             <option value="profissional">Profissional</option>
-            <option value="secretaria">Secretária (admin)</option>
+            <option value="secretaria">Secretária</option>
           </select>
         </div>
         <div class="campo">
@@ -290,30 +1312,18 @@
         </div>
       </div>
       <div class="campo">
-        <label for="novo-senha">Senha inicial</label>
+        <label for="novo-senha">Senha</label>
         <input type="text" id="novo-senha" required>
       </div>
       <div class="modal-acoes">
-        <button type="button" id="btn-fechar-admin" class="btn-secundario">Fechar</button>
-        <button type="submit" class="btn-primario">Cadastrar</button>
+        <button type="button" class="btn btn-secondary" id="btn-fechar-admin">Fechar</button>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ===== MODAL DE NOTIFICAÇÕES ===== -->
-<div id="overlay-notificacoes" class="overlay oculto">
-  <div class="modal">
-    <h3>Notificações</h3>
-    <div id="lista-notificacoes"></div>
-    <div class="modal-acoes">
-      <button type="button" id="btn-fechar-notificacoes" class="btn-secundario">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<div id="area-impressao" class="somente-impressao"></div>
-
+<!-- ===== SCRIPTS ===== -->
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
